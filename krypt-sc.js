@@ -14,6 +14,7 @@ var tbntwoClick = 0;
 var loopStart = 0;
 var i = 0;
 
+
 try {
     var canvas = document.getElementById("tftScreen");
     var ctx = canvas.getContext("2d")
@@ -136,13 +137,15 @@ if (extension == ".int") {
     extension = null
 }
  else if (extension == ".var") {
-        extension = null
+    console.log('.var')
+    extension = null
         loadedCode[i+1] = setVars[loadedCode[i+1]]
-        console.log('found .var')
-        console.log(loadedCode[i+1])
+        console.log(loadedCode[i+1] + ' yes')
         loadedCode[i] = loadedCode[i].substring(0, periodIndex);
+        testLine = loadedCode[i]
 
 }
+testLine = loadedCode[i]
 
 
             if (testLine == 'frontr') {
@@ -176,6 +179,7 @@ if (extension == ".int") {
             if (testLine == 'settext') {
                 i++;
                 setText = loadedCode[i];
+                console.log('set text')
             }
             if (testLine == 'screen') {
                 i++;
@@ -390,6 +394,8 @@ function softCompile(inputString) {
     console.log(output)
     return output;
 }
+
+
 
 
 function onebtn() {
