@@ -13,7 +13,8 @@ var tbnoneClick = 0;
 var tbntwoClick = 0;
 var loopStart = 0;
 var i = 0;
-
+var currentFunction = ""
+var extensionInput = ""
 
 try {
     var canvas = document.getElementById("tftScreen");
@@ -90,63 +91,63 @@ function processCode() {
 
             if (loop == 1) {
                 testLine = loadedCode[i];
-
-if (tbnoneClick == 0 && testLine == "bt1click") {
-i += 5;
-}
-if (tbntwoClick == 0 && testLine == "bt2click") {
-    i += 5;
-}
-if (tbnoneClick == 1 && testLine == "bt1click") {
-tbnoneClick = 0;
-}
-if (tbntwoClick == 1 && testLine == "bt2click") {
-tbntwoClick = 0;
-}
-}
+            }
 
 if (typeof testLine !== 'string') {
     testLine = String(testLine);
 }
-const periodIndex = testLine.indexOf('.');
-extension = null;
 
-// Check if a period exists in the testLine
-if (periodIndex !== -1) {
-    // Extract the substring starting from the period to the end
+extensionInput = loadedCode[i+1]
+
+periodIndex = testLine.indexOf('.');
+
+
+
+if (testLine.indexOf('.') !== -1) {
     extension = testLine.substring(periodIndex);
 }
 
 //function extensions
 if (extension == ".int") {
-        extension = null
-        loadedCode[i+1] = parseInt(loadedCode[i+1])
-        loadedCode[i] = loadedCode[i].substring(0, periodIndex);
+        extension = ""
+        extensionInput = parseInt(loadedCode[i+1])
+        testLine = testLine.substring(0, periodIndex);
 
     }
  else if (extension == ".str") {
-        extension = null
-        loadedCode[i+1] = toString(loadedCode[i+1])
-        loadedCode[i] = loadedCode[i].substring(0, periodIndex);
+        extension = ""
+        extensionInput = toString(loadedCode[i+1])
+        testLine = testLine.substring(0, periodIndex);
 
     }
  else if (extension == ".val") {
 
-    loadedCode[i+1] = Number(loadedCode[i+1])
-    loadedCode[i] = loadedCode[i].substring(0, periodIndex);
-    extension = null
+    extensionInput = Number(loadedCode[i+1])
+    testLine = testLine.substring(0, periodIndex);
+    extension = ""
 }
  else if (extension == ".var") {
     console.log('.var')
-    extension = null
-        loadedCode[i+1] = setVars[loadedCode[i+1]]
-        console.log(loadedCode[i+1] + ' yes')
-        loadedCode[i] = loadedCode[i].substring(0, periodIndex);
-        testLine = loadedCode[i]
-
+        extensionInput = setVars[loadedCode[i+1]]
+        console.log(loadedCode[i+1] + ' yes ' + setVars[loadedCode[i+1]])
+        testLine = testLine.substring(0, periodIndex);
+        extension = ""
 }
-testLine = loadedCode[i]
 
+
+if (tbnoneClick == 0 && testLine == "bt1click") {
+    i += 1;
+    }
+    if (tbntwoClick == 0 && testLine == "bt2click") {
+    i += 1;
+    }
+    if (tbnoneClick == 1 && testLine == "bt1click") {
+    tbnoneClick = 0;
+    currentFunction = loadedCode[i+1]
+    }
+    if (tbntwoClick == 1 && testLine == "bt2click") {
+        currentFunction = loadedCode[i+1]
+    }
 
             if (testLine == 'frontr') {
                 color = 'red';
@@ -177,9 +178,7 @@ testLine = loadedCode[i]
                 backColor = 'blue';
             }
             if (testLine == 'settext') {
-                i++;
-                setText = loadedCode[i];
-                console.log('set text')
+                setText = extensionInput;
             }
             if (testLine == 'screen') {
                 i++;
@@ -231,13 +230,29 @@ testLine = loadedCode[i]
                 setText = setVars[loadedCode[i]];
 
             }
+            if (testLine == 'function') {
+                i++;
+                if (loadedCode[i] != currentFunction) {
+                    var inc = i
+                    while (loadedCode[inc] != '}') {
+                        inc +=1
+                    }
+                    if (loadedCode[inc] == '}') {
+                        i = inc
+                    }
+                }
+            }
+            if (testLine == 'callfunction') {
+                currentFunction = extensionInput
+            }
+            if (testLine == '}') {
+                currentFunction = ""
+            }
             if (testLine == 'coordx') {
-                i++
-                coordx = loadedCode[i];
+                coordx = extensionInput;
             }
             if (testLine == 'coordy') {
-                i++
-                coordy = loadedCode[i];
+                coordy = extensionInput;
             }
             if (testLine == "coordxvar") {
             i++
@@ -286,7 +301,8 @@ var snapshot1 = setVars[var1];
 var snapshot2 = setVars[var2];
 
     if (data[2] == "+") {
-        setVars[var3] = Number(setVars[var1]) + Number(setVars[var2])
+       setVars[var3] = Number(setVars[var1]) + Number(setVars[var2])
+       console.log(setVars[var3])
     } else if (data[2] == "-") {
         setVars[var3] = Number(setVars[var1]) - Number(setVars[var2])
     } else if (data[2] == "..") {
