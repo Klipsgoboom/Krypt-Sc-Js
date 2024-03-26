@@ -1,0 +1,1 @@
+setvar(1, 7) setvar(2, 7) loop bt1click(hello) function hello if 1 == 2 blank skip exit settext hello sign } |

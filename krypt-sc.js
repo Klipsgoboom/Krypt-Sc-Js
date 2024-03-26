@@ -15,6 +15,7 @@ var loopStart = 0;
 var i = 0;
 var currentFunction = ""
 var extensionInput = ""
+var ifStatments = 0
 
 try {
     var canvas = document.getElementById("tftScreen");
@@ -180,6 +181,23 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             if (testLine == 'settext') {
                 setText = extensionInput;
             }
+            if (testLine == 'skip') {
+                i++
+            }
+            if (testLine == 'goto') {
+                i++
+                i = loadedCode[i];
+            }
+            if (testLine == 'exit') {
+                var inc = i
+                while (loadedCode[inc] != '}') {
+                    inc +=1
+                }
+                if (loadedCode[inc] == '}') {
+                    i = inc
+                }
+                console.log('exited')
+            }
             if (testLine == 'screen') {
                 i++;
                 try {
@@ -275,7 +293,36 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             data[2] = loadedCode[i];
               setVars[data[1]] = data[2];
       }
+      if (testLine == 'if') {
+        i++
+        var arg1 = setVars[loadedCode[i]]
+        i++
+        var arg2 = loadedCode[i]
+        i++
+        var arg3 = setVars[loadedCode[i]]
 
+    if (arg2 == '>'){
+        if (arg1 <= arg3) {
+            i +=2
+        }
+    }
+    if (arg2 == '<'){
+        if (arg1 >= arg3) {
+            i +=2
+        }
+    }
+    if (arg2 == '=='){
+        if (arg1 != arg3) {
+            i +=2
+        }
+    }
+    if (arg2 == '!='){
+        if (arg1 != arg3) {
+            i +=2
+        }
+    }
+
+    }
       if (testLine == "var") {
     var firstVar;
     var secondVar;
