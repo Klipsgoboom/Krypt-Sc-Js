@@ -1,5 +1,3 @@
-var color = 'red'
-var backColor = 'blue'
 var setText = "Krypt-Script JS";
 var setTextVar = "Krypt-Script JS";
 var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -16,6 +14,10 @@ var i = 0;
 var currentFunction = ""
 var extensionInput = ""
 var ifStatments = 0
+
+var red = 255
+var green = 255
+var blue = 255
 
 try {
     var canvas = document.getElementById("tftScreen");
@@ -150,9 +152,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
         currentFunction = loadedCode[i+1]
     }
 
-            if (testLine == 'frontr') {
-                color = 'red';
-            }
+
             if (testLine == 'clr') {
                 try {
                 clrScr();
@@ -163,20 +163,13 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             }
             
 
-            if (testLine == 'frontg') {
-                color = 'green';
-            }
-            if (testLine == 'frontb') {
-                color = 'blue';
-            }
-            if (testLine == 'backr') {
-                backColor = 'red';
-            }
-            if (testLine == 'backg') {
-                backColor = 'green';
-            }
-            if (testLine == 'backb') {
-                backColor = 'blue';
+            if (testLine == 'rgb') {
+                i++
+                red = loadedCode[i];
+                i++ 
+                green = loadedCode[i];
+                i++
+                blue = loadedCode[i];
             }
             if (testLine == 'settext') {
                 setText = extensionInput;
@@ -211,7 +204,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             if (testLine == 'save') {
                 i++;
                 try {
-                    save(loadedCode[i], loadedCode[i+1])
+                    save(loadedCode[i], setVars[loadedCode[i+1]]) 
                 } catch(error) {
                     console.error('You dont have a save/load module active')
                 }
@@ -247,6 +240,11 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                 i++;
                 setText = setVars[loadedCode[i]];
 
+            }
+            if (testLine == 'sprite') {
+                i++;
+                ctx.fillRect(Number(loadedCode[i]), Number(loadedCode[i+1]), Number(loadedCode[i+2]), Number(loadedCode[i+3]));
+                i+4
             }
             if (testLine == 'function') {
                 i++;

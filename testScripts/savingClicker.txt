@@ -1,0 +1,25 @@
+load("number", 5) 
+loop 
+clr 
+settext Clicker 
+coordx(200) 
+coordy(10) 
+sign 
+
+coordx(200) 
+coordy(100) 
+settext.var 5 
+sign 
+
+bt1click(click) 
+
+function click 
+coordx(200) 
+coordy(100) 
+setvar(4, 1) 
+var(5, +, 4, 5) 
+settext.var 5 
+sign 
+save("number", 5) 
+} 
+| 
