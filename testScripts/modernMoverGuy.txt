@@ -1,9 +1,3 @@
-// [config]
-autoRun = true //run the code when the file is opened
-
-
-var kryptScCode = 
-`
 setvar(1, 5) 
 setvar(3, 5) 
 setvar(4, 5) 
@@ -31,4 +25,3 @@ coordy.var(4)
 settext "0" 
 sign 
 | 
-`;

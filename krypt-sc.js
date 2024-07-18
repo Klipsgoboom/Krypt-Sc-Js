@@ -1,23 +1,52 @@
-var setText = "Krypt-Script JS";
-var setTextVar = "Krypt-Script JS";
-var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var coordx = 0;
-var coordy = 0;
-var loadedCode = [];
-var scene = 0;
-var inputString = '';
-var loop = 0;
-var tbnoneClick = 0;
-var tbntwoClick = 0;
-var loopStart = 0;
-var i = 0;
-var currentFunction = ""
-var extensionInput = ""
-var ifStatments = 0
-
 var red = 255
 var green = 255
 var blue = 255
+
+var setText = "Krypt-Script JS";
+var setTextVar = "Krypt-Script JS";
+var coordx = 0;
+var coordy = 0;
+var scene = 0;
+var ifStatments = 0
+var currentPhrase = '';
+var result = '';
+var inputString
+var tbnoneClick = 0;
+var tbntwoClick = 0;
+
+
+var previewAllowed = false
+
+imageQueue = [];
+currentIndex = 0;
+
+function queueImage(src, x, y, w, h) {
+    imageQueue.push({ src, x, y, w, h });
+    processQueue();
+}
+
+function processQueue() {
+    if (currentIndex >= imageQueue.length) {
+        return;
+    }
+
+    const { src, x, y, w, h } = imageQueue[currentIndex];
+    const img = new Image();
+    img.src = src;
+
+    img.onload = function() {
+        ctx.drawImage(img, x, y, w, h);
+        currentIndex++;
+        processQueue();
+    };
+
+    img.onerror = function() {
+        console.error('Failed to load image:', src);
+        currentIndex++;
+        processQueue();
+    };
+}
+
 
 try {
     var canvas = document.getElementById("tftScreen");
@@ -26,29 +55,30 @@ try {
 
 }
 
+
+function preview(code) {
+inputString = code
+console.log(inputString)
+var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var loadedCode = [];
+var loop = 0;
+var loopStart = 0;
+var i = 0;
+var currentFunction = ""
+var extensionInput = ""
+
+
 function destroyStart() {
     for (let k = 0; k < loopStart; k++) {
         loadedCode[k] = 'blank'
     }
 }
 
-if (autoRun == true) {
-    inputString = softCompile(kryptScCode)
+    inputString = softCompile(inputString)
     interpret()
-}
-
-function startbtn() {
-    if (scene == 0) {
-        inputString= prompt('Enter Program Here');
-        inputString = softCompile(inputString)
-        interpret();
-    }
-}
 
 function interpret() {
     var currentChar;
-    var currentPhrase = '';
-    var result = '';
     var line = '';
     var active = 0; //1 = kill read
     var linesSet = 0;
@@ -57,6 +87,15 @@ function interpret() {
 
     for (let l = 0; l < inputString.length && active == 0; l++) {
         currentChar = inputString[l];
+
+        imgExtension = line.slice(-4)
+
+        if (imgExtension == ".png" || imgExtension == ".jpg") {
+            var img = new Image();
+            img.src = line
+            console.log('Loading image ' + line)
+        }
+
         if (currentChar != '|' && currentChar != 'z') {
             line += currentChar;
         }
@@ -75,11 +114,11 @@ function interpret() {
     console.log(line);
 }
 
-processCode();
+
 
 function processCode() {
-        if (true) {
             var testLine = loadedCode[linesSet];
+
 
             if (i > loadedCode.length) {
             i = loopStart;
@@ -149,9 +188,9 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
     currentFunction = loadedCode[i+1]
     }
     if (tbntwoClick == 1 && testLine == "bt2click") {
+        tbntwoClick = 0;
         currentFunction = loadedCode[i+1]
     }
-
 
             if (testLine == 'clr') {
                 try {
@@ -162,7 +201,6 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                 }
             }
             
-
             if (testLine == 'rgb') {
                 i++
                 red = loadedCode[i];
@@ -171,6 +209,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                 i++
                 blue = loadedCode[i];
             }
+
             if (testLine == 'settext') {
                 setText = extensionInput;
             }
@@ -228,6 +267,23 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                     console.error('You dont have a save/load module active')
                 }
             }
+            if (testLine == 'sprite') {
+                i++;
+                ctx.fillRect(Number(loadedCode[i]), Number(loadedCode[i+1]), Number(loadedCode[i+2]), Number(loadedCode[i+3]));
+                i+=4
+            }
+            if (testLine == 'img') {
+                i++;
+    const imgSrc = loadedCode[i];
+    const imgX = Number(loadedCode[i + 1]);
+    const imgY = Number(loadedCode[i + 2]);
+    const imgW = Number(loadedCode[i + 3]);
+    const imgH = Number(loadedCode[i + 4]);
+
+    queueImage(imgSrc, imgX, imgY, imgW, imgH);
+    i += 4;
+            }
+            
             if (testLine == 'deleteall') {
                 try {
                     deleteAll()
@@ -240,11 +296,6 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                 i++;
                 setText = setVars[loadedCode[i]];
 
-            }
-            if (testLine == 'sprite') {
-                i++;
-                ctx.fillRect(Number(loadedCode[i]), Number(loadedCode[i+1]), Number(loadedCode[i+2]), Number(loadedCode[i+3]));
-                i+4
             }
             if (testLine == 'function') {
                 i++;
@@ -280,6 +331,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             coordy = setVars[loadedCode[i]];
             }
             if (testLine == "sign") {
+                console.log('sign')
                 writeText();
             }
             if (testLine == "setvar") {
@@ -391,9 +443,12 @@ var snapshot2 = setVars[var2];
     }
 }
 if (testLine == "loop") {
-      loop = 1;
-      loopStart = i +1;
-      destroyStart();
+    //if (previewAllowed == true){
+        loop = 1;
+        loopStart = i +1;
+        destroyStart();
+    //}
+    loop = 1;
     }
 
     if (testLine == "checkvarresult") {
@@ -417,9 +472,6 @@ if (testLine == "loop") {
             if (loop == 1) {
             setTimeout(processCode, 0);
             }
-        } else {
-
-        }
     }
 processCode();
 }
@@ -442,6 +494,7 @@ function softCompile(inputString) {
             result += char;
         }
     }
+    console.log(output)
     output = result
     .replace(/ /g, 'z')
     .replace(/_/g, ' ')
@@ -450,24 +503,20 @@ function softCompile(inputString) {
     .replace(/,/g, '')
     .replace(/"/g, '')
     .replace(/\n/g, '')
-    .replace(/zz/g, 'z');
 
-    console.log(output)
+    console.log(inputString)
     return output;
 }
 
 
 
-
-function onebtn() {
-tbnoneClick = 1;
-console.log("button 1 Active");
-}
-function twobtn() {
-tbntwoClick = 1;
-console.log("button 2 Active");
-}
-
-
-
 startModules()
+}
+function onebtn() {
+    tbnoneClick = 1;
+    console.log("button 1 Active");
+    }
+    function twobtn() {
+    tbntwoClick = 1;
+    console.log("button 2 Active");
+    }

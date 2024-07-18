@@ -1,4 +1,5 @@
 function writeText() {
+    console.log('attempt to create text')
     ctx.font = "16px Arial";
     ctx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
     ctx.fillText(setText, Number(coordx), Number(coordy)+16);
