@@ -13,6 +13,8 @@ var result = '';
 var inputString
 var tbnoneClick = 0;
 var tbntwoClick = 0;
+var sizeX = 0;
+var sizeY =0;
 
 
 var previewAllowed = false
@@ -59,11 +61,11 @@ try {
 function preview(code) {
 inputString = code
 console.log(inputString)
-var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var loadedCode = [];
 var loop = 0;
 var loopStart = 0;
 var i = 0;
+var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var loadedCode = [];
 var currentFunction = ""
 var extensionInput = ""
 
@@ -88,13 +90,14 @@ function interpret() {
     for (let l = 0; l < inputString.length && active == 0; l++) {
         currentChar = inputString[l];
 
-        imgExtension = line.slice(-4)
+        itemExtension = line.slice(-4)
 
-        if (imgExtension == ".png" || imgExtension == ".jpg") {
+        if (itemExtension == ".png" || itemExtension == ".jpg") {
             var img = new Image();
             img.src = line
             console.log('Loading image ' + line)
         }
+
 
         if (currentChar != '|' && currentChar != 'z') {
             line += currentChar;
@@ -110,10 +113,8 @@ function interpret() {
         active = 1;
         }
 
-
     console.log(line);
 }
-
 
 
 function processCode() {
@@ -134,6 +135,7 @@ function processCode() {
             if (loop == 1) {
                 testLine = loadedCode[i];
             }
+
 
 if (typeof testLine !== 'string') {
     testLine = String(testLine);
@@ -175,6 +177,7 @@ if (extension == ".int") {
         testLine = testLine.substring(0, periodIndex);
         extension = ""
 }
+
 
 
 if (tbnoneClick == 0 && testLine == "bt1click") {
@@ -269,19 +272,20 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             }
             if (testLine == 'sprite') {
                 i++;
+
                 ctx.fillRect(Number(loadedCode[i]), Number(loadedCode[i+1]), Number(loadedCode[i+2]), Number(loadedCode[i+3]));
                 i+=4
             }
             if (testLine == 'img') {
                 i++;
-    const imgSrc = loadedCode[i];
-    const imgX = Number(loadedCode[i + 1]);
-    const imgY = Number(loadedCode[i + 2]);
-    const imgW = Number(loadedCode[i + 3]);
-    const imgH = Number(loadedCode[i + 4]);
+                const imgSrc = loadedCode[i];
+                const imgX = Number(loadedCode[i + 1]);
+                const imgY = Number(loadedCode[i + 2]);
+                const imgW = Number(loadedCode[i + 3]);
+                const imgH = Number(loadedCode[i + 4]);
 
-    queueImage(imgSrc, imgX, imgY, imgW, imgH);
-    i += 4;
+             queueImage(imgSrc, imgX, imgY, imgW, imgH);
+             i += 4;
             }
             
             if (testLine == 'deleteall') {
