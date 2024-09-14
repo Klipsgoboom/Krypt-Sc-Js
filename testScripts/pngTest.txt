@@ -1,0 +1,11 @@
+settext "ah"
+sign 
+
+loop 
+bt1click(write) 
+
+function write 
+img("https://schoolory.web.app/notaping.png", 10, 10, 100, 100) 
+} 
+
+| 

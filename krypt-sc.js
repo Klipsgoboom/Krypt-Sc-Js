@@ -15,6 +15,7 @@ var tbnoneClick = 0;
 var tbntwoClick = 0;
 var sizeX = 0;
 var sizeY =0;
+var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 
 var previewAllowed = false
@@ -57,6 +58,15 @@ try {
 
 }
 
+function varChecker(varToCheck) {
+    console.log(String(varToCheck))
+if (String(varToCheck).includes('KSCvar')) { //is var
+    varSplit = varToCheck.split('.')
+    return setVars[varSplit[1]];
+} else {                             //is not var
+    return varToCheck;
+}
+}
 
 function preview(code) {
 inputString = code
@@ -64,7 +74,6 @@ console.log(inputString)
 var loop = 0;
 var loopStart = 0;
 var i = 0;
-var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var loadedCode = [];
 var currentFunction = ""
 var extensionInput = ""
@@ -170,10 +179,8 @@ if (extension == ".int") {
     testLine = testLine.substring(0, periodIndex);
     extension = ""
 }
- else if (extension == ".var") {
-    console.log('.var')
+ else if (extension == ".var") { //deprecated
         extensionInput = setVars[loadedCode[i+1]]
-        console.log(loadedCode[i+1] + ' yes ' + setVars[loadedCode[i+1]])
         testLine = testLine.substring(0, periodIndex);
         extension = ""
 }
@@ -214,14 +221,15 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             }
 
             if (testLine == 'settext') {
-                setText = extensionInput;
+                setText = varChecker(extensionInput)
+
             }
             if (testLine == 'skip') {
                 i++
             }
             if (testLine == 'goto') {
                 i++
-                i = loadedCode[i];
+                i = varChecker(loadedCode[i])
             }
             if (testLine == 'exit') {
                 var inc = i
@@ -296,7 +304,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                 }
             }
 
-            if (testLine == 'settextvar') {
+            if (testLine == 'settextvar') { //deprecated
                 i++;
                 setText = setVars[loadedCode[i]];
 
@@ -320,59 +328,57 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                 currentFunction = ""
             }
             if (testLine == 'coordx') {
-                coordx = extensionInput;
+                coordx = varChecker(extensionInput);
             }
             if (testLine == 'coordy') {
-                coordy = extensionInput;
+                coordy = varChecker(extensionInput);
             }
-            if (testLine == "coordxvar") {
+            if (testLine == "coordxvar") { //deprecated
             i++
             coordx = setVars[loadedCode[i]];
 
             }
-            if (testLine == "coordyvar") {
+            if (testLine == "coordyvar") { //deprecated
             i++
             coordy = setVars[loadedCode[i]];
             }
             if (testLine == "sign") {
-                console.log('sign')
                 writeText();
             }
             if (testLine == "setvar") {
-          
                 var data = [5];
-              i++
-              data[1] = loadedCode[i];
-              i++
-            data[2] = loadedCode[i];
-              setVars[data[1]] = data[2];
+                i++
+                data[1] = loadedCode[i];
+                i++
+                data[2] = loadedCode[i];
+                setVars[data[1]] = data[2];
       }
       if (testLine == 'if') {
         i++
-        var arg1 = setVars[loadedCode[i]]
+        var arg1 = varChecker(loadedCode[i])
         i++
-        var arg2 = loadedCode[i]
+        var arg2 = varChecker(loadedCode[i])
         i++
-        var arg3 = setVars[loadedCode[i]]
+        var arg3 = varChecker(loadedCode[i])
 
     if (arg2 == '>'){
         if (arg1 <= arg3) {
-            i +=2
+            i +=1
         }
     }
     if (arg2 == '<'){
         if (arg1 >= arg3) {
-            i +=2
+            i +=1
         }
     }
     if (arg2 == '=='){
         if (arg1 != arg3) {
-            i +=2
+            i +=1
         }
     }
     if (arg2 == '!='){
         if (arg1 != arg3) {
-            i +=2
+            i +=1
         }
     }
 
@@ -385,11 +391,11 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
     var data = [5];
 
     i++
-    data[1] = loadedCode[i]; // variable number
+    data[1] = varChecker(loadedCode[i]); // variable number
     i++
     data[2] = loadedCode[i]; // operator
     i++
-    data[3] = loadedCode[i]; // variable number
+    data[3] = varChecker(loadedCode[i]); // variable number
     i++
     data[4] = loadedCode[i]; // variable to store result in
 
@@ -402,35 +408,35 @@ var snapshot1 = setVars[var1];
 var snapshot2 = setVars[var2];
 
     if (data[2] == "+") {
-       setVars[var3] = Number(setVars[var1]) + Number(setVars[var2])
+       setVars[var3] = Number(var1) + Number(var2)
        console.log(setVars[var3])
     } else if (data[2] == "-") {
-        setVars[var3] = Number(setVars[var1]) - Number(setVars[var2])
+        setVars[var3] = Number(var1) - Number(var2)
     } else if (data[2] == "..") {
-        setVars[var3] = setVars[var1] + setVars[var2]
+        setVars[var3] = var1 + var2
     } else if (data[2] == "*") {
-        setVars[var3] = Number(setVars[var1]) * Number(setVars[var2])
+        setVars[var3] = Number(var1) * Number(var2)
     } else if (data[2] == "/") {
-        if (setVars[var2] != 0) {
-            setVars[var3] = Number(setVars[var1]) / Number(setVars[var2])
+        if (var2 != 0) {
+            setVars[var3] = Number(var1) / Number(var2)
         } else {
             // Handle division by zero error
         }
     } else if (data[2] == "=") {
-        if (setVars[var1] == setVars[var2]) {
+        if (var1 == var2) {
             setVars[var3] = 1;
             Serial.println("Equal!");
-            Serial.print(setVars[var1]);
-            Serial.print(setVars[var2]);
+            Serial.print(var1);
+            Serial.print(var2);
         } else {
             setVars[var3] = 0;
 
                         Serial.println("non Equal!");
-                        Serial.print(setVars[var1]);
-                        Serial.print(setVars[var2]);
+                        Serial.print(var1);
+                        Serial.print(var2);
         }
     } else if (data[2] == ">") {
-        if (setVars[var1] > setVars[var2]) {
+        if (var1 > var2) {
             setVars[var3] = 1;
             Serial.println("True");
         } else {
@@ -438,7 +444,7 @@ var snapshot2 = setVars[var2];
             Serial.println("False");
         }
     } else if (data[2] == "<") {
-        if (setVars[var1] < setVars[var2]) {
+        if (var1 < var2) {
             setVars[var3] = 1;
         } else {
             setVars[var3] = 0;
@@ -500,6 +506,7 @@ function softCompile(inputString) {
     }
     console.log(output)
     output = result
+    .replace(/;/g, 'z')
     .replace(/ /g, 'z')
     .replace(/_/g, ' ')
     .replace(/\(/g, 'z')

@@ -1,0 +1,4 @@
+setvar(1, "This text is loaded from a var!") 
+settext KSCvar.1 
+sign 
+| 
