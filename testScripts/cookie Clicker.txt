@@ -38,7 +38,15 @@ bt1click(addCookie);
 bt2click(addFactory);
 
 function(addCookie);
-var(KSCvar.5, *, 1, 1);
+setvar(1, 1);
+var(KSCvar.5, *, KSCvar.1, 1);
+var(KSCvar.1, +, 1, 1);
+
+if KSCvar.5 > 0;
+skip;
+setvar(1, 1);
+
+
 var(KSCvar.4, +, KSCvar.1, 4);
 save("count", 4);
 };

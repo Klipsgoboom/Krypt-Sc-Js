@@ -17,3 +17,7 @@ function screenSize(x,y) {
     canvas.height = y
     canvas.width = x
 }
+function sprite(x,y,l,w) {
+    ctx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
+    ctx.fillRect(x, y, l, w);
+}

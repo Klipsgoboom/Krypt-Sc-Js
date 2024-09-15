@@ -202,150 +202,148 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
         currentFunction = loadedCode[i+1]
     }
 
-            if (testLine == 'clr') {
-                try {
-                clrScr();
-                }
-                catch(error) {
-                console.error('Graphics module error: Tried to use a graphics function without a graphics module')
-                }
-            }
+    else if (testLine == 'clr') {
+        try {
+        clrScr();
+        }
+        catch(error) {
+        console.error('Graphics module error: Tried to use a graphics function without a graphics module')
+        }
+    }
             
-            if (testLine == 'rgb') {
-                i++
-                red = loadedCode[i];
-                i++ 
-                green = loadedCode[i];
-                i++
-                blue = loadedCode[i];
-            }
+    else if (testLine == 'rgb') {
+        i++
+        red = loadedCode[i];
+        i++ 
+        green = loadedCode[i];
+        i++
+        blue = loadedCode[i];
+    }
 
-            if (testLine == 'settext') {
-                setText = varChecker(extensionInput)
+    else if (testLine == 'settext') {
+        setText = varChecker(extensionInput)
+    }
+    else if (testLine == 'skip') {
+        i++
+    }
+    else if (testLine == 'goto') {
+        i++
+        i = varChecker(loadedCode[i])
+    }
+    else if (testLine == 'exit') {
+        var inc = i
+        while (loadedCode[inc] != '}') {
+            inc +=1
+        }
+        if (loadedCode[inc] == '}') {
+            i = inc
+        }
+        console.log('exited')
+    }
+    else if (testLine == 'screen') {
+        i++;
+        try {
+            screenSize(Number(loadedCode[i]), Number(loadedCode[i+1]))
+            i++;
+            console.log(Number(loadedCode[i]) + " " + Number(loadedCode[i+1]))
+        } catch(error) {
+        console.error('You dont have a save/load module active')
+    }
+    }
+    else if (testLine == 'save') {
+        i++;
+        try {
+            save(loadedCode[i], setVars[loadedCode[i+1]]) 
+        } catch(error) {
+        console.error('You dont have a save/load module active')
+        }
+        i++;
+        }
+        else if (testLine == 'load') {
+            i++;
+            try {
+                load(loadedCode[i])
+                setVars[loadedCode[i+1]] = loadedFromStorage
+                i++;
+            } catch(error) {
+            console.error('You dont have a save/load module active')
+            }
+        }
+        else if (testLine == 'deletefile') {
+            i++;
+            try {
+                deleteFile(loadedCode[i])
+            } catch(error) {
+            console.error('You dont have a save/load module active')
+            }
+        }
+        else if (testLine == 'sprite') {
+            i++;
+            sprite(Number(varChecker(loadedCode[i])), Number(varChecker(loadedCode[i+1])), Number(varChecker(loadedCode[i+2])), Number(varChecker(loadedCode[i+3])))
+            i+=3
+        }
+        else if (testLine == 'img') {
+            i++;
+            const imgSrc = loadedCode[i];
+            const imgX = Number(loadedCode[i + 1]);
+            const imgY = Number(loadedCode[i + 2]);
+            const imgW = Number(loadedCode[i + 3]);
+            const imgH = Number(loadedCode[i + 4]);
 
-            }
-            if (testLine == 'skip') {
-                i++
-            }
-            if (testLine == 'goto') {
-                i++
-                i = varChecker(loadedCode[i])
-            }
-            if (testLine == 'exit') {
+            queueImage(imgSrc, imgX, imgY, imgW, imgH);
+            i += 4;
+        }
+            
+        else if (testLine == 'deleteall') {
+            try {
+                deleteAll()
+                } catch(error) {
+                console.error('You dont have a save/load module active')
+                }
+        }
+
+        else if (testLine == 'settextvar') { //deprecated
+            i++;
+            setText = setVars[loadedCode[i]];
+
+        }
+        else if (testLine == 'function') {
+            i++;
+            if (loadedCode[i] != currentFunction) {
                 var inc = i
                 while (loadedCode[inc] != '}') {
-                    inc +=1
-                }
-                if (loadedCode[inc] == '}') {
-                    i = inc
-                }
-                console.log('exited')
+                inc +=1
             }
-            if (testLine == 'screen') {
-                i++;
-                try {
-                    screenSize(Number(loadedCode[i]), Number(loadedCode[i+1]))
-                    i++;
-                    console.log(Number(loadedCode[i]) + " " + Number(loadedCode[i+1]))
-                } catch(error) {
-                    console.error('You dont have a save/load module active')
-                }
+            if (loadedCode[inc] == '}') {
+                i = inc
             }
-            if (testLine == 'save') {
-                i++;
-                try {
-                    save(loadedCode[i], setVars[loadedCode[i+1]]) 
-                } catch(error) {
-                    console.error('You dont have a save/load module active')
-                }
-                i++;
             }
-            if (testLine == 'load') {
-                i++;
-                try {
-                    load(loadedCode[i])
-                    setVars[loadedCode[i+1]] = loadedFromStorage
-                    i++;
-                } catch(error) {
-                    console.error('You dont have a save/load module active')
-                }
-            }
-            if (testLine == 'deletefile') {
-                i++;
-                try {
-                    deleteFile(loadedCode[i])
-                } catch(error) {
-                    console.error('You dont have a save/load module active')
-                }
-            }
-            if (testLine == 'sprite') {
-                i++;
-
-                ctx.fillRect(Number(loadedCode[i]), Number(loadedCode[i+1]), Number(loadedCode[i+2]), Number(loadedCode[i+3]));
-                i+=4
-            }
-            if (testLine == 'img') {
-                i++;
-                const imgSrc = loadedCode[i];
-                const imgX = Number(loadedCode[i + 1]);
-                const imgY = Number(loadedCode[i + 2]);
-                const imgW = Number(loadedCode[i + 3]);
-                const imgH = Number(loadedCode[i + 4]);
-
-             queueImage(imgSrc, imgX, imgY, imgW, imgH);
-             i += 4;
-            }
-            
-            if (testLine == 'deleteall') {
-                try {
-                    deleteAll()
-                } catch(error) {
-                    console.error('You dont have a save/load module active')
-                }
-            }
-
-            if (testLine == 'settextvar') { //deprecated
-                i++;
-                setText = setVars[loadedCode[i]];
-
-            }
-            if (testLine == 'function') {
-                i++;
-                if (loadedCode[i] != currentFunction) {
-                    var inc = i
-                    while (loadedCode[inc] != '}') {
-                        inc +=1
-                    }
-                    if (loadedCode[inc] == '}') {
-                        i = inc
-                    }
-                }
-            }
-            if (testLine == 'callfunction') {
+        }
+        else if (testLine == 'callfunction') {
                 currentFunction = extensionInput
             }
-            if (testLine == '}') {
+            else if (testLine == '}') {
                 currentFunction = ""
             }
-            if (testLine == 'coordx') {
+            else if (testLine == 'coordx') {
                 coordx = varChecker(extensionInput);
             }
-            if (testLine == 'coordy') {
+            else if (testLine == 'coordy') {
                 coordy = varChecker(extensionInput);
             }
-            if (testLine == "coordxvar") { //deprecated
+            else if (testLine == "coordxvar") { //deprecated
             i++
             coordx = setVars[loadedCode[i]];
 
             }
-            if (testLine == "coordyvar") { //deprecated
+            else if (testLine == "coordyvar") { //deprecated
             i++
             coordy = setVars[loadedCode[i]];
             }
-            if (testLine == "sign") {
+            else if (testLine == "sign") {
                 writeText();
             }
-            if (testLine == "setvar") {
+            else if (testLine == "setvar") {
                 var data = [5];
                 i++
                 data[1] = loadedCode[i];
@@ -353,7 +351,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                 data[2] = loadedCode[i];
                 setVars[data[1]] = data[2];
       }
-      if (testLine == 'if') {
+      else if (testLine == 'if') {
         i++
         var arg1 = varChecker(loadedCode[i])
         i++
@@ -383,7 +381,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
     }
 
     }
-      if (testLine == "var") {
+    else if (testLine == "var") {
     var firstVar;
     var secondVar;
     var thirdVar;
@@ -452,7 +450,7 @@ var snapshot2 = setVars[var2];
     } else {
     }
 }
-if (testLine == "loop") {
+else if (testLine == "loop") {
     //if (previewAllowed == true){
         loop = 1;
         loopStart = i +1;
@@ -461,7 +459,7 @@ if (testLine == "loop") {
     loop = 1;
     }
 
-    if (testLine == "checkvarresult") {
+    else if (testLine == "checkvarresult") {
              var data = [5];
           line += 1;
           data[1] = loadedCode[line];
@@ -472,6 +470,8 @@ if (testLine == "loop") {
           } else {
            Serial.println("The variable tested true!");
           }
+    } else if (loadedCode[i] != "blank") {
+        console.warn( '"' + loadedCode[i] + '"' + " performed no actions. That is fine if it is any argument input.")
     }
 
 }
