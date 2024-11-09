@@ -11,9 +11,11 @@ function load(name) {
     var loadedData = 0
     if (storedData) {
         loadedData = JSON.parse(storedData);
-        loadedFromStorage = loadedData["data"]
+        return(loadedData["data"]);
     } else {
-        console.log('Data not found in storage');
+        console.error('Data not found in storage');
+        return(0);
+
     }
 }
 

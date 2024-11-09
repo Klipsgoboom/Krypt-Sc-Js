@@ -5,8 +5,8 @@ autoRun = true //run the code when the file is opened
 var kryptScCode = 
 `
 load("count", 4);
-setvar(5, 1);
 load("factories", 5);
+setvar(1, 1);
 loop;
 clr;
 
@@ -40,24 +40,23 @@ coordy(200);
 settext("Click 2 to buy factory for $40");
 sign;
 
-bt1click(addCookie);
-bt2click(addFactory);
-
-function(addCookie);
-var(KSCvar.5, *, 1, 1);
-var(KSCvar.4, +, KSCvar.1, 4);
-save("count", 4);
-};
-
-function(addFactory);
+bt2click addFactory;
+function addFactory;
 setvar(1, 1);
-if(KSCvar.4, >, 39);
-skip;
-exit;
+if KSCvar.4 > 39; {;
 var(KSCvar.4, -, 40, 4);
+save("count", 4);
 var(KSCvar.5, +, KSCvar.1, 5);
 save("factories", 5);
 };
+};
+
+bt1click addCookie;
+function addCookie;
+var(KSCvar.5, *, KSCvar.1, 2);
+var(KSCvar.4, +, KSCvar.2, 4);
+var(KSCvar.4, +, KSCvar.1, 4);
+save("count", 4);
 };
 |;
 `;

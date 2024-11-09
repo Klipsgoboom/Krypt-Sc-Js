@@ -16,7 +16,7 @@ var tbntwoClick = 0;
 var sizeX = 0;
 var sizeY =0;
 var setVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-
+var parenthesisOpened = 0
 
 var previewAllowed = false
 
@@ -59,7 +59,6 @@ try {
 }
 
 function varChecker(varToCheck) {
-    console.log(String(varToCheck))
 if (String(varToCheck).includes('KSCvar')) { //is var
     varSplit = varToCheck.split('.')
     return setVars[varSplit[1]];
@@ -70,7 +69,6 @@ if (String(varToCheck).includes('KSCvar')) { //is var
 
 function preview(code) {
 inputString = code
-console.log(inputString)
 var loop = 0;
 var loopStart = 0;
 var i = 0;
@@ -104,7 +102,6 @@ function interpret() {
         if (itemExtension == ".png" || itemExtension == ".jpg") {
             var img = new Image();
             img.src = line
-            console.log('Loading image ' + line)
         }
 
 
@@ -118,13 +115,10 @@ function interpret() {
         linesSet += 1;  
         }
         if (currentChar == '|') {
-            console.log("Killed load with |")
         active = 1;
         }
 
-    console.log(line);
 }
-
 
 function processCode() {
             var testLine = loadedCode[linesSet];
@@ -154,11 +148,10 @@ extensionInput = loadedCode[i+1]
 
 periodIndex = testLine.indexOf('.');
 
-
-
 if (testLine.indexOf('.') !== -1) {
     extension = testLine.substring(periodIndex);
 }
+
 
 //function extensions
 if (extension == ".int") {
@@ -188,19 +181,22 @@ if (extension == ".int") {
 
 
 if (tbnoneClick == 0 && testLine == "bt1click") {
-    i += 1;
+    i++
     }
     if (tbntwoClick == 0 && testLine == "bt2click") {
-    i += 1;
+    i++
     }
     if (tbnoneClick == 1 && testLine == "bt1click") {
+    i++
     tbnoneClick = 0;
-    currentFunction = loadedCode[i+1]
+    currentFunction = loadedCode[i]
     }
     if (tbntwoClick == 1 && testLine == "bt2click") {
+        i++
         tbntwoClick = 0;
-        currentFunction = loadedCode[i+1]
+        currentFunction = loadedCode[i]
     }
+
 
     else if (testLine == 'clr') {
         try {
@@ -226,6 +222,10 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
     else if (testLine == 'skip') {
         i++
     }
+    else if (testLine == '{') {
+        parenthesisOpened++
+        i++;
+    }
     else if (testLine == 'goto') {
         i++
         i = varChecker(loadedCode[i])
@@ -235,17 +235,13 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
         while (loadedCode[inc] != '}') {
             inc +=1
         }
-        if (loadedCode[inc] == '}') {
-            i = inc
-        }
-        console.log('exited')
+
     }
     else if (testLine == 'screen') {
         i++;
         try {
             screenSize(Number(loadedCode[i]), Number(loadedCode[i+1]))
             i++;
-            console.log(Number(loadedCode[i]) + " " + Number(loadedCode[i+1]))
         } catch(error) {
         console.error('You dont have a save/load module active')
     }
@@ -262,8 +258,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
         else if (testLine == 'load') {
             i++;
             try {
-                load(loadedCode[i])
-                setVars[loadedCode[i+1]] = loadedFromStorage
+                setVars[loadedCode[i+1]] = load(loadedCode[i])
                 i++;
             } catch(error) {
             console.error('You dont have a save/load module active')
@@ -311,19 +306,25 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             i++;
             if (loadedCode[i] != currentFunction) {
                 var inc = i
-                while (loadedCode[inc] != '}') {
-                inc +=1
+                while (loadedCode[inc] != '}' && parenthesisOpened == 0) {
+                inc +=1;
+                if (parenthesisOpened == 0 && loadedCode[inc] == '}') {
+                    i = inc
+                }
             }
-            if (loadedCode[inc] == '}') {
+            if (loadedCode[inc] == '}' && parenthesisOpened == 0) {
                 i = inc
+                currentFunction = ""
             }
             }
         }
         else if (testLine == 'callfunction') {
                 currentFunction = extensionInput
             }
-            else if (testLine == '}') {
+            else if (testLine == '}' && parenthesisOpened == 0) {
                 currentFunction = ""
+            } else if(testLine == '}' && parenthesisOpened != 0) {
+                parenthesisOpened -=1
             }
             else if (testLine == 'coordx') {
                 coordx = varChecker(extensionInput);
@@ -358,28 +359,21 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
         var arg2 = varChecker(loadedCode[i])
         i++
         var arg3 = varChecker(loadedCode[i])
+        i++
+        parenthesisOpened++;
+        var inc = i
+        if (arg1 <= arg3 && arg2 == '>' || arg2 == '<' && arg1 >= arg3 || arg2 == '==' && arg1 != arg3 || arg2 == '!=' && arg1 == arg3) {
+            while (loadedCode[inc] != '}' && parenthesisOpened >= 1) {
 
-    if (arg2 == '>'){
-        if (arg1 <= arg3) {
-            i +=1
+                inc++
+            }
+            if (loadedCode[inc] == '}' && parenthesisOpened >= 1) {
+            i = inc
+            parenthesisOpened -= 1
+            }
+        } else {
+            i++
         }
-    }
-    if (arg2 == '<'){
-        if (arg1 >= arg3) {
-            i +=1
-        }
-    }
-    if (arg2 == '=='){
-        if (arg1 != arg3) {
-            i +=1
-        }
-    }
-    if (arg2 == '!='){
-        if (arg1 != arg3) {
-            i +=1
-        }
-    }
-
     }
     else if (testLine == "var") {
     var firstVar;
@@ -407,7 +401,6 @@ var snapshot2 = setVars[var2];
 
     if (data[2] == "+") {
        setVars[var3] = Number(var1) + Number(var2)
-       console.log(setVars[var3])
     } else if (data[2] == "-") {
         setVars[var3] = Number(var1) - Number(var2)
     } else if (data[2] == "..") {
@@ -471,7 +464,7 @@ else if (testLine == "loop") {
            Serial.println("The variable tested true!");
           }
     } else if (loadedCode[i] != "blank") {
-        console.warn( '"' + loadedCode[i] + '"' + " performed no actions. That is fine if it is any argument input.")
+        //console.warn( '"' + loadedCode[i] + '"' + " performed no actions. That is fine if it is any argument input.")
     }
 
 }
@@ -504,7 +497,6 @@ function softCompile(inputString) {
             result += char;
         }
     }
-    console.log(output)
     output = result
     .replace(/;/g, 'z')
     .replace(/ /g, 'z')
@@ -515,7 +507,6 @@ function softCompile(inputString) {
     .replace(/"/g, '')
     .replace(/\n/g, '')
 
-    console.log(inputString)
     return output;
 }
 
@@ -525,9 +516,7 @@ startModules()
 }
 function onebtn() {
     tbnoneClick = 1;
-    console.log("button 1 Active");
     }
     function twobtn() {
     tbntwoClick = 1;
-    console.log("button 2 Active");
     }
