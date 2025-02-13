@@ -43,7 +43,7 @@ sign;
 bt2click addFactory;
 function addFactory;
 setvar(1, 1);
-if KSCvar.4 > 39; {;
+if(KSCvar.4 > 39); {;
 var(KSCvar.4, -, 40, 4);
 save("count", 4);
 var(KSCvar.5, +, KSCvar.1, 5);

@@ -34,6 +34,14 @@ coordy(200);
 settext("Click 2 to buy factory for $40");
 sign;
 
+bt1click addCookie;
+function addCookie;
+var(KSCvar.5, *, KSCvar.1, 2);
+var(KSCvar.4, +, KSCvar.2, 4);
+var(KSCvar.4, +, KSCvar.1, 4);
+save("count", 4);
+};
+
 bt2click addFactory;
 function addFactory;
 setvar(1, 1);
@@ -45,11 +53,4 @@ save("factories", 5);
 };
 };
 
-bt1click addCookie;
-function addCookie;
-var(KSCvar.5, *, KSCvar.1, 2);
-var(KSCvar.4, +, KSCvar.2, 4);
-var(KSCvar.4, +, KSCvar.1, 4);
-save("count", 4);
-};
 |;

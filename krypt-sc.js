@@ -332,15 +332,6 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             else if (testLine == 'coordy') {
                 coordy = varChecker(extensionInput);
             }
-            else if (testLine == "coordxvar") { //deprecated
-            i++
-            coordx = setVars[loadedCode[i]];
-
-            }
-            else if (testLine == "coordyvar") { //deprecated
-            i++
-            coordy = setVars[loadedCode[i]];
-            }
             else if (testLine == "sign") {
                 writeText();
             }
