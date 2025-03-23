@@ -4,64 +4,43 @@ autoRun = true //run the code when the file is opened
 
 var kryptScCode = 
 `
-load("count", 4);
-load("factories", 5);
-setvar(1, 1);
-
-
-keydown(a, addCookie);
-keydown(b, addFactory);
-
-
+setvar(1, 5);
+setvar(3, 5);
+setvar(4, 5);
+keydown(w, moveUp);
+keydown(a, moveLeft);
+keydown(s, moveDown);
+keydown(d, moveRight);
 loop;
 clr;
 
-coordx(100);
-coordy(0);
-settext("Bad Cookie Clicker");
-sign;
 
-coordx(100);
-coordy(50);
-settext("Cookies: ");
-sign;
 
-coordx(175);
-coordy(50);
-settext KSCvar.4;
-sign;
+bt1click(moveRight);
+bt2click(moveLeft);
 
-coordx(100);
-coordy(100);
-settext("Factories: ");
-sign;
-
-coordx(175);
-coordy(100);
-settext KSCvar.5;
-sign;
-
-coordx(100);
-coordy(200);
-settext("Click 2 or b to buy factory for $40");
-sign;
-bt1click addCookie;
-bt2click addFactory;
-function addCookie;
-var(KSCvar.5, *, KSCvar.1, 2);
-var(KSCvar.4, +, KSCvar.2, 4);
-var(KSCvar.4, +, KSCvar.1, 4);
-save("count", 4);
+function moveRight;
+var(KSCvar.3, +, 2, 3);
+};
+function moveLeft;
+var(KSCvar.3, -, 2, 3);
+};
+function moveUp;
+var(KSCvar.4, -, 2, 4);
 };
 
-function addFactory;
-setvar(1, 1);
-if(KSCvar.4 > 39); {;
-var(KSCvar.4, -, 40, 4);
-save("count", 4);
-var(KSCvar.5, +, KSCvar.1, 5);
-save("factories", 5);
+function moveDown;
+var(KSCvar.4, +, 2, 4);
 };
-};
+
+coordx 10;
+coordy 10;
+settext "move left and right with button 1 and 2 or w a s d ";
+sign;
+
+coordx(KSCvar.3);
+coordy(KSCvar.4);
+settext "0";
+sign;
 |;
 `;
