@@ -7,6 +7,12 @@ var kryptScCode =
 load("count", 4);
 load("factories", 5);
 setvar(1, 1);
+
+
+keydown(a, addCookie);
+keydown(b, addFactory);
+
+
 loop;
 clr;
 
@@ -37,10 +43,17 @@ sign;
 
 coordx(100);
 coordy(200);
-settext("Click 2 to buy factory for $40");
+settext("Click 2 or b to buy factory for $40");
 sign;
-
+bt1click addCookie;
 bt2click addFactory;
+function addCookie;
+var(KSCvar.5, *, KSCvar.1, 2);
+var(KSCvar.4, +, KSCvar.2, 4);
+var(KSCvar.4, +, KSCvar.1, 4);
+save("count", 4);
+};
+
 function addFactory;
 setvar(1, 1);
 if(KSCvar.4 > 39); {;
@@ -49,14 +62,6 @@ save("count", 4);
 var(KSCvar.5, +, KSCvar.1, 5);
 save("factories", 5);
 };
-};
-
-bt1click addCookie;
-function addCookie;
-var(KSCvar.5, *, KSCvar.1, 2);
-var(KSCvar.4, +, KSCvar.2, 4);
-var(KSCvar.4, +, KSCvar.1, 4);
-save("count", 4);
 };
 |;
 `;

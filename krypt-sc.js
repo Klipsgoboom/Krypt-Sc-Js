@@ -23,10 +23,20 @@ var previewAllowed = false
 imageQueue = [];
 currentIndex = 0;
 
+let sprites = {}
+
 function queueImage(src, x, y, w, h) {
     imageQueue.push({ src, x, y, w, h });
     processQueue();
 }
+
+function registerNewSprite(name, posx, posy, w, h, type, extra) {
+    sprites[name] = new sprites(posx, posy, w, h, type, extra);
+}
+function drawSprite(name) {
+ctx.fillRect(sprites.name.posx, sprites.name.posy, sprites.name.w, sprites.name.h)
+}
+
 
 function processQueue() {
     if (currentIndex >= imageQueue.length) {
@@ -75,7 +85,6 @@ var i = 0;
 var loadedCode = [];
 var currentFunction = ""
 var extensionInput = ""
-
 
 function destroyStart() {
     for (let k = 0; k < loopStart; k++) {
@@ -304,6 +313,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
         }
         else if (testLine == 'function') {
             i++;
+            functionName = loadedCode[i]
             if (loadedCode[i] != currentFunction) {
                 var inc = i
                 while (loadedCode[inc] != '}' && parenthesisOpened == 0) {
@@ -312,7 +322,7 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
                     i = inc
                 }
             }
-            if (loadedCode[inc] == '}' && parenthesisOpened == 0) {
+            if (loadedCode[inc] == '}' && parenthesisOpened == 0 && functionName == currentFunction) {
                 i = inc
                 currentFunction = ""
             }
@@ -334,6 +344,23 @@ if (tbnoneClick == 0 && testLine == "bt1click") {
             }
             else if (testLine == "sign") {
                 writeText();
+            }
+            else if (testLine == "keydown") {
+                i++;
+                setKey = loadedCode[i];
+                console.log(setKey);
+                
+                i++;
+                setFuncName = loadedCode[i]; 
+                console.log(setFuncName);
+
+                document.addEventListener("keydown", (function(key, funcName) {
+                    return function(event) {
+                        if (event.key === key) {
+                            currentFunction = funcName;
+                        }
+                    };
+                })(setKey, setFuncName));
             }
             else if (testLine == "setvar") {
                 var data = [5];
